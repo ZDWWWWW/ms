@@ -66,7 +66,7 @@ public class StockController {
 //        return result;
 //    }
 
-    //开发秒杀方法,使用乐观锁防止超卖
+    //添加商品
     @GetMapping("addStock")
     public String addStock(String name, Integer count){
         try{

@@ -232,7 +232,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     //校验库存
-    private Stock checkStock(Integer id){
+       private Stock checkStock(Integer id){
         Stock stock = stockDAO.checkStock(id);
         if(stock.getSale().equals(stock.getCount())){
             throw new RuntimeException("库存不足！！！");
@@ -251,7 +251,7 @@ public class OrderServiceImpl implements OrderService {
         String stockId = StockUtil.STOCK + id;
         String stockcId = stockId + ":" + randomId;
         if(Integer.valueOf(stringRedisTemplate.opsForValue().get(stockId)) <= 0){
-            throw new RuntimeException("库存不足！！");
+                throw new RuntimeException("库存不足！！");
         }
         if(!stringRedisTemplate.opsForValue().setIfAbsent(lockKey, clientId, 1, TimeUnit.SECONDS)) {
             throw new RuntimeException("抢购失败，请重试！！！");
@@ -259,7 +259,7 @@ public class OrderServiceImpl implements OrderService {
         try{
             Integer num = Integer.valueOf(stringRedisTemplate.opsForValue().get(stockcId));
             if(num <= 0){
-                throw new RuntimeException("库存不足！！！");
+                 throw new RuntimeException("库存不足！！！");
             };
             stringRedisTemplate.opsForValue().increment(stockcId,-1);
             stringRedisTemplate.opsForValue().increment(stockId, -1);
@@ -302,8 +302,6 @@ public class OrderServiceImpl implements OrderService {
     public void createOrderByMq(Stock stock, Integer userid) throws JsonProcessingException {
         Order order = new Order();
         order.setSid(stock.getId()).setName(stock.getName()).setCreateDate(new Date()).setUid(userid);
-//        rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
-//        rabbitTemplate.convertAndSend("order", order);
         String msgJson = objectMapper.writeValueAsString(order);
         Message message = MessageBuilder
                 .withBody(msgJson.getBytes())
@@ -343,7 +341,7 @@ public class OrderServiceImpl implements OrderService {
                 // 业务处理失败后调用
                 channel.basicNack(message.getMessageProperties().getDeliveryTag(),false, true);
 //                channel.basicReject(message.getMessageProperties().getDeliveryTag(), true);
-            }
+        }
         } catch (Exception e) {
             channel.basicNack(message.getMessageProperties().getDeliveryTag(),false, true);
             e.printStackTrace();
