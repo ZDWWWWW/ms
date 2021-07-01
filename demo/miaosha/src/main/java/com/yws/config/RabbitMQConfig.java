@@ -20,7 +20,7 @@ public class RabbitMQConfig implements RabbitListenerConfigurer {
         registrar.setMessageHandlerMethodFactory(messageHandlerMethodFactory());
     }
     // test git test conflict1
-    // test conflict2
+    // test conflict3
     @Bean
     MessageHandlerMethodFactory messageHandlerMethodFactory() {
         DefaultMessageHandlerMethodFactory messageHandlerMethodFactory = new DefaultMessageHandlerMethodFactory();
